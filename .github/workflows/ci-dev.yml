@@ -14,7 +14,7 @@ jobs:
     
     # Required permissions for CML to post comments
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       issues: write
       id-token: write
