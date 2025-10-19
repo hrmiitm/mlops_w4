@@ -11,10 +11,13 @@ on:
 jobs:
   test-and-train:
     runs-on: ubuntu-latest
-    permissions:                    # ← ADD THIS SECTION
+    
+    # Required permissions for CML to post comments
+    permissions:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
     
     steps:
       - name: Checkout repository
@@ -22,15 +25,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ... rest of your steps remain the same
-
       - name: Set up Python
-        uses: actions/setup-python@v5   # Also updated to latest
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Cache Python dependencies
-        uses: actions/cache@v4   # Updated to v4
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -68,6 +69,8 @@ jobs:
 
       - name: Run DVC pipeline
         run: |
+          echo '${{ secrets.GCP_SA_KEY }}' > /tmp/gcp-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json
           dvc repro
 
       - name: Run evaluation tests
