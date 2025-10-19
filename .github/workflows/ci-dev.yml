@@ -19,12 +19,12 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5   # Also updated to latest
         with:
           python-version: '3.10'
 
       - name: Cache Python dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4   # Updated to v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
@@ -60,17 +60,13 @@ jobs:
         run: |
           pytest tests/test_data_validation.py -v --tb=short
 
-      - name: Train model
+      - name: Run DVC pipeline
         run: |
-          python src/train.py
+          dvc repro
 
       - name: Run evaluation tests
         run: |
           pytest tests/test_eval.py -v --tb=short
-
-      - name: Evaluate model
-        run: |
-          python src/evaluate.py
 
       - name: Setup CML
         uses: iterative/setup-cml@v2
@@ -110,7 +106,7 @@ jobs:
           cml comment create report.md
 
       - name: Upload model artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: model-artifacts-dev
           path: |
