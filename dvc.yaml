@@ -1,0 +1,19 @@
+stages:
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - params.yaml
+    params:
+      - train
+    outs:
+      - models/iris_model.joblib
+      - models/metrics.json
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - models/iris_model.joblib
+    outs:
+      - models/evaluation_report.json
