@@ -11,12 +11,18 @@ on:
 jobs:
   test-train-and-push:
     runs-on: ubuntu-latest
+    permissions:                    # ← ADD THIS SECTION
+      contents: read
+      pull-requests: write
+      issues: write
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      # ... rest of your steps remain the same
 
       - name: Set up Python
         uses: actions/setup-python@v5   # Updated to latest
